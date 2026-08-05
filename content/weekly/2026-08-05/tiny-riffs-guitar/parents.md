@@ -1,15 +1,31 @@
 Here are three short video scripts for parents of young kids in Mumbai:
 
-**Script 1**
-Hey there, Mumbai parents! Are you looking for a way to help your child shine? Guitar lessons can be a great way to boost their confidence and self-esteem. As a guitar teacher based in Malad, I've seen firsthand how learning guitar can help kids develop discipline and a sense of accomplishment. And the best part? It's tons of fun! If you're in Mumbai and looking for a patient and encouraging teacher, I'm here to help. Subscribe to my channel, Tiny Riffs Guitar, and let's get started with a lesson today! 
+**Script 1: Unlocking Confidence**
+Hey parents! Want to see your child shine with confidence? Guitar lessons can do that! I'm [YOUR NAME] from Tiny Riffs Guitar, based in Malad, and I teach guitar to young kids across Mumbai. My lessons are designed to be fun and engaging, helping your child build confidence and self-esteem. Subscribe to my channel for more tips and book a lesson with me to see your child thrive! I'm just around the corner, making it easy for you to give your child the gift of music.
 
-**Script 2**
-What if your child could learn a new skill that would stay with them for a lifetime? As a guitar teacher in Mumbai, I've helped many young kids discover the joy of playing guitar. Not only is it a great way to express themselves creatively, but it also teaches valuable skills like perseverance and hard work. And with me, you can rest assured that your child will receive personalized attention and guidance every step of the way. Since I'm based in Malad, it's easy to schedule a lesson that fits your family's busy schedule. So why not give it a try? Subscribe to Tiny Riffs Guitar and let's book a lesson that's convenient for you!
+**Script 2: Fun and Discipline**
+Hey Mumbai parents! Are you looking for an activity that's both fun and disciplined for your kids? Guitar lessons are the perfect answer! At Tiny Riffs Guitar, I create a supportive environment where your child can learn and grow. My lessons are tailored to young beginners, and I'm based in Malad, making it convenient for you to schedule a lesson. Subscribe to my channel for more updates and book a lesson with me to introduce your child to the world of music! I teach across Mumbai, so don't hesitate to reach out.
 
-**Script 3**
-Mumbai parents, are you looking for a way to enrich your child's life with music? Guitar lessons are an excellent way to introduce your kid to the world of music, and I'm excited to share my passion with your family! As a local guitar teacher, I understand the importance of finding a teacher who is not only qualified but also nearby. That's why I'm proud to offer guitar lessons to kids across Mumbai, from Malad to beyond. By subscribing to Tiny Riffs Guitar and booking a lesson, you'll be giving your child the gift of music and all its benefits - confidence, discipline, and most importantly, fun! 
+**Script 3: Nurturing Creativity**
+Hey parents! Want to nurture your child's creativity and watch them grow into a happy, well-rounded individual? Guitar lessons can help! I'm [YOUR NAME] from Tiny Riffs Guitar, and I'm passionate about teaching young kids in Mumbai the joy of playing the guitar. My patient and encouraging approach ensures your child feels comfortable and supported throughout their learning journey. Subscribe to my channel for more inspiration and book a lesson with me to give your child the gift of music! As a local teacher based in Malad, I'm always here to help.
 
 
+Unlocking Confidence
+Fun and Discipline
+Nurturing Creativity
+Raising Happy Kids
+Guitar Lessons for a Brighter Future
+Music to My Ears
+Game-Changer for Kids
+Transforming Lives with Music
+Guitar Teacher Near You
+Tiny Riffs Guitar
+Local Music Lessons
+Convenient Guitar Lessons
+Music for a Happy Child
+Guitar Lessons in Our Backyard
+Supportive Music Environment
+Encouraging Young Musicians
 Guitar Lessons for Mumbai Kids
 Boosting Confidence through Music
 Local Guitar Teacher for Young Students
