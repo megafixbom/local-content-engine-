@@ -42,3 +42,25 @@ jobs:
             git commit -m "chore: weekly content refresh"
             git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:${GITHUB_REF_NAME}"
           fi
+
+      - name: Get content folder
+        id: date
+        run: echo "folder=content/weekly/$(date +%F)" >> "$GITHUB_OUTPUT"
+
+      - name: Email content
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_HOST }}
+          server_port: 465
+          secure: true
+          username: ${{ secrets.SMTP_USER }}
+          password: ${{ secrets.SMTP_PASS }}
+          to: ${{ secrets.EMAIL_TO }}
+          from: ${{ secrets.SMTP_USER }}
+          subject: Weekly content - ${{ steps.date.outputs.folder }}
+          body: |
+            Fresh content generated for Tiny Riffs Guitar and AITO.
+            Folder: ${{ steps.date.outputs.folder }}
+            Download the attached files and start posting!
+          attachments: ${{ steps.date.outputs.folder }}/*/*.md
+          convert_markdown: true
