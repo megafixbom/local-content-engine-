@@ -1,0 +1,1 @@
+"Get ready to rock 🎸! We're stoked to announce we're playing live at [VENUE] on [DATE]! Catch us [insert time slot] and let's make some unforgettable memories 😎. Don't miss out - mark your calendars and we'll see you there! Call [PHONE] for tickets and info. Let's sell this out! 🎟️"
