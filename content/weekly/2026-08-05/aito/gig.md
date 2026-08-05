@@ -1,9 +1,14 @@
-Get ready to groove with AITO! 🎸 We're bringing our unique blend of rock, 80s classics, and local Bollywood covers with an electronic twist to [VENUE] on [DATE]. It's going to be an unforgettable night of music and fun! 🎶 Join us for an evening that will keep you on your toes and leave you wanting more. Don't miss out - call [PHONE] to book your spot now and let's get this party started! 
+"Who's ready to party? 🎉💃 We're excited to announce that AITO is taking the stage at [VENUE] on [DATE]! 🎸 Get ready for a night of non-stop energy and fun as we bring our signature blend of rock, electronic, and local Bollywood covers to the [VENUE] crowd. Don't miss out on the action - mark your calendars and join us for an unforgettable night of music and dancing! 🕺 Call [PHONE] to book your table now and let's get this party started! 
 
 
-Get ready to groove with AITO
-Unique blend of music
-Unforgettable night
-Party announcement
-Music and fun
-Gig alert
+Gig announcement template
+Reusable gig post
+AITO live at [VENUE]
+Fun night ahead
+Party with AITO
+Live music alert
+Book your table now
+Non-stop energy night
+Signature sound
+Unmissable performance
+Night to remember"

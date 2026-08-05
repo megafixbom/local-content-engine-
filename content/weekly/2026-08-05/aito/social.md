@@ -1,21 +1,21 @@
 Facebook: 
-We're excited to announce that AITO is now taking bookings for the upcoming wedding season! Our unique blend of rock, 80s classics, and local Bollywood covers with an electronic twist is sure to get your guests on the dance floor. Contact us at [PHONE] to learn more about how we can make your special day truly unforgettable.
+AITO is all about bringing people together through music! Our unique blend of rock, electronic, and local Bollywood covers is the perfect recipe for an unforgettable night. Whether you're celebrating a special occasion or just want to let loose, we've got you covered. Let's get this party started!
 
 Instagram: 
-Electronic beats, rock vibes, and Bollywood flair - AITO's got the perfect mix to keep you dancing all night long! Whether it's a wedding, private party, or club night, we bring the energy. Let's get this party started!
+What's your go-to karaoke jam? We love putting our own twist on classic Bollywood tracks and rocking out to them on stage. Send us your favorite song and we might just add it to our setlist! 
 
-Instagram: 
-Who says classics are old news? AITO's 80s covers are a breath of fresh air, with a modern electronic twist that'll keep you moving. Follow us for updates on our upcoming shows and let's rock this town!
+Instagram (video caption): 
+Sneak peek of our latest rehearsal 🎸🎶! We're perfecting our sound and can't wait to get back on stage. Stay tuned for upcoming show dates!
 
 Facebook: 
-Looking for a way to spice up your corporate event or private party? AITO's high-energy performance is just what you need to get your guests pumped up and having a great time. Send us a message to book us for your next event!
+Need a break from the ordinary wedding entertainment? Look no further! AITO's high-energy performances will have your guests dancing all night long. Let's make your special day truly unforgettable.
 
-Video Caption (Instagram): 
-Get ready for a musical rollercoaster with AITO! From rock to Bollywood, we're bringing the heat. Stay tuned for our upcoming shows and let's make some unforgettable memories!
+Instagram: 
+It's time to level up your corporate events and private parties! Our eclectic mix of rock, electronic, and Bollywood covers is the perfect way to keep your guests entertained. Let's talk about how AITO can bring the house down at your next event!
 
 
-We're excited to announce that AITO is now taking bookings for the upcoming wedding season
-Electronic beats, rock vibes, and Bollywood flair 
-Who says classics are old news
-Looking for a way to spice up your corporate event or private party
-Get ready for a musical rollercoaster with AITO
+AITO is all about bringing people together through music
+What's your go-to karaoke jam
+Sneak peek of our latest rehearsal
+Need a break from the ordinary wedding entertainment
+It's time to level up your corporate events and private parties
