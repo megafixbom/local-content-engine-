@@ -1,5 +1,6 @@
 name: Weekly content refresh
 
+# Re-trigger: any push to master re-evaluates this workflow.
 on:
   schedule:
     # Every Monday at 06:00 UTC
