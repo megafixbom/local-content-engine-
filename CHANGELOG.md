@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Weekly auto-generation workflow (GitHub Actions) producing fresh content every Monday.
+- `scripts/generate-weekly.js` with a no-repeat system: past titles are tracked in
+  `content/.history.json` and excluded from future generations.
+- Rate-limit retry with backoff in the weekly generator.
+
+### Changed
+
+- Prompt templates moved to `server/prompts.js`, shared by the API server and the
+  weekly generator (single source of truth).
+
 ## [1.0.0] - 2026-08-05
 
 ### Added

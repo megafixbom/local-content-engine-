@@ -98,6 +98,31 @@ the configured LLM key.
 teacher tab. Shorts grow the channel; lesson videos position him as the teacher
 parents trust — both funnel viewers into booking his lessons.
 
+## Weekly fresh ideas (no repeats)
+
+A GitHub Actions workflow generates **new ideas every week, automatically** — and
+never repeats.
+
+- Runs **every Monday** (and can be triggered manually in Actions → "Weekly content refresh" → Run workflow).
+- Writes a dated snapshot to `content/weekly/YYYY-MM-DD/` for both Tiny Riffs Guitar and AITO.
+- **No-repeat:** every generated title/topic is stored in `content/.history.json`.
+  Each week the AI is told the full list of past titles and instructed not to reuse them.
+- Rate-limit retries are built in.
+
+**One-time setup (5 minutes):**
+1. Push this repo to GitHub.
+2. In the repo: **Settings → Secrets and variables → Actions → New repository secret**, add:
+   - `USER_LLM_API_KEY` = your Groq (or other provider) key
+   - `USER_LLM_BASE_URL` = `https://api.groq.com/openai/v1`
+   - `USER_LLM_MODEL` = `llama-3.3-70b-versatile`
+3. Done — fresh content lands in your repo every Monday.
+
+You can also run it manually anytime, locally:
+
+```bash
+node scripts/generate-weekly.js
+```
+
 ## Generated content packs
 
 The repo ships ready-to-use starter packs in `content/`:
@@ -124,10 +149,13 @@ node scripts/gen-pack.js
 
 ```
 server/          Express backend that calls the LLM API
+server/prompts.js   Shared prompt templates (server + weekly script)
 client/          React + Vite frontend
 scripts/dev.js   Runs both server and client together
 scripts/gen-pack.js   Regenerates the content packs in content/
+scripts/generate-weekly.js   Weekly fresh-idea generator with no-repeat dedup
 content/         Generated client deliverables (.md)
+.github/workflows/weekly-content.yml   Weekly auto-generation workflow
 .env.example     API key template (copy to .env)
 ```
 
