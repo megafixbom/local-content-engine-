@@ -25,6 +25,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Design studio **Photo mode**: real AI images for social posts & thumbnails,
   generated free via Pollinations (no API key), with Sana / Flux / Turbo model
   choices and `.jpg` download at exact platform sizes.
+- Design studio Photo mode extras: ready-made Tiny Riffs Guitar prompt presets,
+  a "text to put on the image" field that bakes your name / phone / address into
+  generated posters & thumbnails, and an own-photo tool that stamps your channel
+  name + contact onto any uploaded photo (canvas-based, fully client-side).
 
 ### Changed
 

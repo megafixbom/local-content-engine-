@@ -71,6 +71,10 @@ The frontend proxies `/api` to the backend, so everything works through one port
 The Design studio now has two output types: **Vector (SVG)** for crisp logos and
 banners, and **Photo mode** which generates real AI images (free via Pollinations,
 no API key needed) at exact platform sizes — ready to post for a friend's channel.
+Photo mode includes ready-made Tiny Riffs Guitar prompts, a "text to put on the
+image" field to stamp your name / phone / address onto posters and thumbnails, and
+an **own-photo** tool that stamps your channel name + contact onto any photo you
+upload and exports a post-ready `.jpg` (all done in the browser).
 
 The **Clients tab** is your pipeline: add each paying client, set their monthly
 retainer and due date, and the app tracks status (prospect → active → done) with

@@ -76,12 +76,57 @@ const STYLES = [
   'flat cartoon illustration style'
 ];
 
+const PROMPT_PRESETS = [
+  { id: 'custom', label: 'Custom (write your own below)', subject: '', extraText: '' },
+  {
+    id: 'kid-chords',
+    label: 'Kid practicing chords at home',
+    subject: 'a happy 8-year-old kid practicing guitar chords at home in Mumbai',
+    extraText: 'Tiny Riffs Guitar'
+  },
+  {
+    id: 'chord-chart',
+    label: 'Colourful chord chart poster',
+    subject: 'a colourful guitar chord chart poster for kids with a cartoon guitar',
+    extraText: 'Learn Guitar · Tiny Riffs'
+  },
+  {
+    id: 'stage',
+    label: 'Kid on stage',
+    subject: 'a cheerful kid performing guitar on a small school stage',
+    extraText: 'Tiny Riffs Guitar · Malad, Mumbai'
+  },
+  {
+    id: 'parent-kid',
+    label: 'Parent & kid learning together',
+    subject: 'a parent and young child learning guitar together at home, warm light',
+    extraText: 'Tiny Riffs Guitar · Lessons across Mumbai'
+  },
+  {
+    id: 'new-video',
+    label: 'NEW VIDEO thumbnail',
+    subject: 'YouTube thumbnail: excited kid holding a guitar, big smile, playful cartoon style',
+    extraText: 'NEW VIDEO · Tiny Riffs'
+  },
+  {
+    id: 'flatlay',
+    label: 'Guitar flat-lay',
+    subject: 'a bright flat-lay of a kid-sized acoustic guitar with music notes and crayons',
+    extraText: 'Music Lessons · Malad to Bandra'
+  }
+];
+
 const DEFAULT_DESIGN = {
   subject: 'Tiny Riffs Guitar',
   purpose: 'logo',
   style: STYLES[0],
   mode: 'svg',
-  model: 'sana'
+  model: 'sana',
+  preset: 'custom',
+  extraText: '',
+  photo: null,
+  photoBrand: 'Tiny Riffs Guitar',
+  photoContact: 'Malad, Mumbai · 98xxxxxx00'
 };
 
 const IMAGE_MODELS = [
@@ -240,7 +285,8 @@ export default function App() {
             style: design.style,
             width: purpose.width,
             height: purpose.height,
-            model: design.model
+            model: design.model,
+            extraText: design.extraText || undefined
           })
         });
         if (!res.ok) {
@@ -291,6 +337,59 @@ export default function App() {
       ? designSvg
       : `data:image/svg+xml;charset=utf-8,${encodeURIComponent(designSvg)}`
     : '';
+
+  const applyPreset = (id) => {
+    const preset = PROMPT_PRESETS.find((p) => p.id === id);
+    if (!preset) return;
+    if (id === 'custom') {
+      setDesign((p) => ({ ...p, preset: 'custom' }));
+      return;
+    }
+    setDesign((p) => ({ ...p, preset: id, subject: preset.subject, extraText: preset.extraText }));
+  };
+
+  const onPhotoUpload = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setDesign((p) => ({ ...p, photo: reader.result }));
+    reader.readAsDataURL(file);
+  };
+
+  const makePhotoPost = () => {
+    const img = new Image();
+    img.onload = () => {
+      const purpose = PURPOSES.find((p) => p.id === design.purpose);
+      const width = purpose.width;
+      const height = purpose.height;
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      const scale = Math.max(width / img.width, height / img.height);
+      const dw = img.width * scale;
+      const dh = img.height * scale;
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, width, height);
+      ctx.drawImage(img, (width - dw) / 2, (height - dh) / 2, dw, dh);
+      const barH = Math.max(90, Math.round(height * 0.16));
+      ctx.fillStyle = 'rgba(0,0,0,0.62)';
+      ctx.fillRect(0, height - barH, width, barH);
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#ffffff';
+      ctx.font = `bold ${Math.round(barH * 0.4)}px Arial, sans-serif`;
+      ctx.fillText(design.photoBrand || '', width / 2, height - barH + barH * 0.42, width * 0.9);
+      ctx.fillStyle = '#ffe08a';
+      ctx.font = `${Math.round(barH * 0.2)}px Arial, sans-serif`;
+      ctx.fillText(design.photoContact || '', width / 2, height - barH + barH * 0.74, width * 0.9);
+      const url = canvas.toDataURL('image/jpeg', 0.92);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${design.subject.replace(/[^a-z0-9]/gi, '_') || 'post'}_${purpose.id}.jpg`;
+      a.click();
+    };
+    img.src = design.photo;
+  };
 
   const saveProfile = () => {
     if (!profile.name) {
@@ -456,12 +555,26 @@ export default function App() {
                 options={STYLES}
               />
               {design.mode === 'photo' && (
-                <Select
-                  label="AI model"
-                  value={design.model}
-                  onChange={(v) => updateDesign('model')(v)}
-                  options={IMAGE_MODELS}
-                />
+                <>
+                  <Select
+                    label="Ready-made prompt"
+                    value={design.preset}
+                    onChange={(v) => applyPreset(v)}
+                    options={PROMPT_PRESETS}
+                  />
+                  <Select
+                    label="AI model"
+                    value={design.model}
+                    onChange={(v) => updateDesign('model')(v)}
+                    options={IMAGE_MODELS}
+                  />
+                  <Field
+                    label="Text to put on the image (name, phone, address…)"
+                    value={design.extraText}
+                    onChange={updateDesign('extraText')}
+                    placeholder="e.g. Tiny Riffs Guitar · Malad, Mumbai · 98xxxxxx00"
+                  />
+                </>
               )}
               <div className="task-grid">
                 <button className="task-btn" disabled={loading} onClick={generateImages}>
@@ -470,9 +583,34 @@ export default function App() {
               </div>
               <p className="hint">
                 {design.mode === 'photo'
-                  ? 'Real AI images (free, no key needed) at exact platform sizes — ready to post for the channel.'
+                  ? 'Real AI images (free, no key needed) at exact platform sizes. Text on image works best for posters & thumbnails.'
                   : 'Free vector designs generated by the AI model (uses your Groq key). Crisp logos & banners at the exact size each platform needs.'}
               </p>
+
+              <hr className="divider" />
+              <p className="section-title">Use your own photo</p>
+              <Field label="Brand name to stamp on it" value={design.photoBrand} onChange={updateDesign('photoBrand')} placeholder="e.g. Tiny Riffs Guitar" />
+              <Field label="Contact / extra line" value={design.photoContact} onChange={updateDesign('photoContact')} placeholder="e.g. Malad, Mumbai · 98xxxxxx00" />
+              <input
+                type="file"
+                accept="image/*"
+                className="file-input"
+                onChange={onPhotoUpload}
+              />
+              {design.photo && (
+                <>
+                  <img src={design.photo} alt="your photo preview" className="photo-preview" />
+                  <div className="task-grid">
+                    <button className="task-btn" onClick={makePhotoPost} disabled={!design.photoBrand}>
+                      Make post &amp; download .jpg
+                    </button>
+                  </div>
+                  <p className="hint">
+                    Your photo is placed at the chosen purpose size with your brand
+                    name + contact in a bar at the bottom. Done in your browser, free.
+                  </p>
+                </>
+              )}
             </>
           )}
 

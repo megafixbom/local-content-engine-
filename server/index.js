@@ -139,15 +139,18 @@ const IMAGE_MODELS = ['sana', 'flux', 'turbo'];
 
 app.post('/api/image', async (req, res) => {
   try {
-    const { subject, purpose, style, width, height, model } = req.body || {};
+    const { subject, purpose, style, width, height, model, extraText } = req.body || {};
     if (!subject) {
       return res.status(400).json({ error: 'subject is required' });
     }
     const w = Math.min(Number(width) || 1024, 2048);
     const h = Math.min(Number(height) || 1024, 2048);
     const mdl = IMAGE_MODELS.includes(model) ? model : 'sana';
+    const textOnImage = extraText
+      ? ` Render the following text on the image (large, readable, clearly spelled): "${extraText}".`
+      : '';
     const prompt = encodeURIComponent(
-      `Create a ${purpose || 'social media graphic'} for "${subject}". Style: ${style || 'photorealistic'}, vibrant, high quality.`
+      `Create a ${purpose || 'social media graphic'} for "${subject}". Style: ${style || 'photorealistic'}, vibrant, high quality.${textOnImage}`
     );
     const url = `${POLLINATIONS_URL}/${prompt}?width=${w}&height=${h}&model=${mdl}&nologo=true&seed=${Math.floor(Math.random() * 1e9)}`;
 
