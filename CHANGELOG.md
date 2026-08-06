@@ -12,11 +12,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `scripts/generate-weekly.js` with a no-repeat system: past titles are tracked in
   `content/.history.json` and excluded from future generations.
 - Rate-limit retry with backoff in the weekly generator.
+- Client tracker tab: add/remove clients, set status (prospect/active/paused/done),
+  monthly retainer and due date (overdue highlighted), and notes. Persists in
+  `localStorage` alongside saved profiles.
+- Save/load client profiles (band, business, teacher) to `localStorage`, plus a
+  copy-paste export of all saved data.
+- PDF-friendly print styles: clicking Print outputs a branded, clean deliverable
+  for each client.
+- New content tasks: Hashtags (20), WhatsApp broadcasts (5), and Auto-post CSV (5)
+  with correct next-5-days scheduling and `.csv` download.
+- WhatsApp broadcasts and Hashtags added to the weekly auto-generation jobs.
 
 ### Changed
 
 - Prompt templates moved to `server/prompts.js`, shared by the API server and the
   weekly generator (single source of truth).
+- Hashtag prompts are now location-aware (city and service area from the profile).
+- CSV dates are rewritten server-side to the next 5 consecutive days, so the
+  schedule is always correct regardless of the model's training-data bias.
 
 ## [1.0.0] - 2026-08-05
 

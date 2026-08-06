@@ -119,7 +119,7 @@ const JOBS = [
     system: teacherSystemPrompt,
     buildUser: buildTeacherUserPrompt,
     taskFor: contentPromptForTeacher,
-    tasks: ['short', 'parents', 'songs', 'calendar']
+    tasks: ['short', 'parents', 'songs', 'calendar', 'whatsapp', 'hashtags']
   },
   {
     profile: {
@@ -132,7 +132,7 @@ const JOBS = [
     system: bandSystemPrompt,
     buildUser: buildBandUserPrompt,
     taskFor: contentPromptForBand,
-    tasks: ['social', 'gig', 'pitch', 'blog']
+    tasks: ['social', 'gig', 'pitch', 'blog', 'hashtags']
   }
 ];
 

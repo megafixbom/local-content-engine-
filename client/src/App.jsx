@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const DEFAULT_BAND = {
   kind: 'band',
@@ -31,14 +31,19 @@ const BAND_TASKS = [
   { type: 'social', label: 'Social posts (5)' },
   { type: 'gig', label: 'Gig announcement template' },
   { type: 'pitch', label: 'Booking pitch email' },
-  { type: 'blog', label: 'Blog: Booking AITO' }
+  { type: 'blog', label: 'Blog: Booking AITO' },
+  { type: 'hashtags', label: 'Hashtags (20)' },
+  { type: 'socialcsv', label: 'Auto-post CSV (5)' }
 ];
 
 const BUSINESS_TASKS = [
   { type: 'social', label: 'Social posts (5)' },
   { type: 'blog', label: 'SEO blog post' },
   { type: 'review', label: 'Review responses' },
-  { type: 'gbp', label: 'Google Business posts' }
+  { type: 'gbp', label: 'Google Business posts' },
+  { type: 'hashtags', label: 'Hashtags (20)' },
+  { type: 'whatsapp', label: 'WhatsApp broadcasts (5)' },
+  { type: 'socialcsv', label: 'Auto-post CSV (5)' }
 ];
 
 const TEACHER_TASKS = [
@@ -47,7 +52,10 @@ const TEACHER_TASKS = [
   { type: 'lesson', label: 'Lesson video script' },
   { type: 'parents', label: 'Parent pitch videos (3)' },
   { type: 'songs', label: 'Original song ideas (5)' },
-  { type: 'calendar', label: '2-week content calendar' }
+  { type: 'calendar', label: '2-week content calendar' },
+  { type: 'hashtags', label: 'Hashtags (20)' },
+  { type: 'whatsapp', label: 'WhatsApp broadcasts (5)' },
+  { type: 'socialcsv', label: 'Auto-post CSV (5)' }
 ];
 
 const PURPOSES = [
@@ -73,6 +81,21 @@ const DEFAULT_DESIGN = {
   purpose: 'logo',
   style: STYLES[0]
 };
+
+const CLIENT_STATUSES = ['Lead', 'Pitched', 'Follow-up', 'Signed', 'Closed'];
+const KIND_LABELS = { band: 'Band', business: 'Business', teacher: 'Teacher' };
+
+const PROFILES_KEY = 'lce-saved-profiles';
+const CLIENTS_KEY = 'lce-clients';
+
+function loadJSON(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch {
+    return fallback;
+  }
+}
 
 function Field({ label, value, onChange, placeholder, textarea }) {
   return (
@@ -123,6 +146,19 @@ export default function App() {
   const [lastTask, setLastTask] = useState('');
   const [designSvg, setDesignSvg] = useState('');
 
+  const [savedProfiles, setSavedProfiles] = useState(() => loadJSON(PROFILES_KEY, []));
+  const [selectedProfile, setSelectedProfile] = useState('');
+  const [clients, setClients] = useState(() => loadJSON(CLIENTS_KEY, []));
+  const [clientForm, setClientForm] = useState({ name: '', niche: '', contact: '', status: 'Lead', followUp: '', notes: '' });
+
+  useEffect(() => {
+    localStorage.setItem(PROFILES_KEY, JSON.stringify(savedProfiles));
+  }, [savedProfiles]);
+
+  useEffect(() => {
+    localStorage.setItem(CLIENTS_KEY, JSON.stringify(clients));
+  }, [clients]);
+
   const profiles = { band, business, teacher };
   const setters = { band: setBand, business: setBusiness, teacher: setTeacher };
   const profile = profiles[kind];
@@ -135,13 +171,13 @@ export default function App() {
     setLoading(true);
     setError('');
     setOutput('');
-    setImages([]);
+    setDesignSvg('');
     setLastTask(request.type);
     try {
       const res = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ profile, request })
+        body: JSON.stringify({ profile, request: { ...request, today: new Date().toISOString().slice(0, 10) } })
       });
       const data = await res.json();
       if (!res.ok) {
@@ -161,14 +197,20 @@ export default function App() {
   };
 
   const download = () => {
-    const safe = `${profile.name.replace(/[^a-z0-9]/gi, '_')}_${lastTask}.md`;
-    const blob = new Blob([output], { type: 'text/markdown' });
+    const ext = lastTask === 'socialcsv' ? '.csv' : '.md';
+    const safe = `${profile.name.replace(/[^a-z0-9]/gi, '_')}_${lastTask}${ext}`;
+    const type = lastTask === 'socialcsv' ? 'text/csv' : 'text/markdown';
+    const blob = new Blob([output], { type });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = safe;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const downloadPdf = () => {
+    window.print();
   };
 
   const generateImages = async () => {
@@ -217,11 +259,65 @@ export default function App() {
     ? `data:image/svg+xml;charset=utf-8,${encodeURIComponent(designSvg)}`
     : '';
 
+  const saveProfile = () => {
+    if (!profile.name) {
+      alert('Give this profile a name first.');
+      return;
+    }
+    setSavedProfiles((prev) => {
+      const existing = prev.find((p) => p.kind === profile.kind && p.profile.name === profile.name);
+      if (existing) {
+        return prev.map((p) => (p.id === existing.id ? { ...p, profile: { ...profile } } : p));
+      }
+      return [...prev, { id: `${Date.now()}`, kind: profile.kind, profile: { ...profile } }];
+    });
+    alert(`Saved "${profile.name}"`);
+  };
+
+  const handleLoadProfile = (id) => {
+    const found = savedProfiles.find((p) => p.id === id);
+    if (!found) return;
+    setters[found.kind](found.profile);
+    setKind(found.kind);
+    setSelectedProfile(id);
+  };
+
+  const deleteProfile = () => {
+    if (!selectedProfile) return;
+    setSavedProfiles((prev) => prev.filter((p) => p.id !== selectedProfile));
+    setSelectedProfile('');
+  };
+
+  const addClient = () => {
+    if (!clientForm.name) return;
+    setClients((prev) => [
+      ...prev,
+      { id: `${Date.now()}`, ...clientForm, name: clientForm.name.trim() }
+    ]);
+    setClientForm({ name: '', niche: '', contact: '', status: 'Lead', followUp: '', notes: '' });
+  };
+
+  const setClientStatus = (id, status) => {
+    setClients((prev) => prev.map((c) => (c.id === id ? { ...c, status } : c)));
+  };
+
+  const deleteClient = (id) => {
+    setClients((prev) => prev.filter((c) => c.id !== id));
+  };
+
   const tasks = { band: BAND_TASKS, business: BUSINESS_TASKS, teacher: TEACHER_TASKS }[kind];
+
+  const tabList = [
+    ['band', 'Band / Musician'],
+    ['business', 'Local business'],
+    ['teacher', 'Music teacher'],
+    ['images', 'Design studio'],
+    ['clients', 'Clients']
+  ];
 
   return (
     <div className="app">
-      <header className="header">
+      <header className="header print-hide">
         <h1>Local Content Engine</h1>
         <p>
           Generate client-ready marketing content for local businesses and bands.
@@ -229,15 +325,15 @@ export default function App() {
         </p>
       </header>
 
+      <div className="print-brand">
+        <div className="print-brand-name">Local Content Engine</div>
+        <div className="print-brand-client">{profile.name}</div>
+      </div>
+
       <div className="layout">
-        <section className="card form-card">
+        <section className="card form-card print-hide">
           <div className="tabs">
-            {[
-              ['band', 'Band / Musician'],
-              ['business', 'Local business'],
-              ['teacher', 'Music teacher'],
-              ['images', 'Design studio']
-            ].map(([key, label]) => (
+            {tabList.map(([key, label]) => (
               <button
                 key={key}
                 className={kind === key ? 'tab active' : 'tab'}
@@ -247,6 +343,25 @@ export default function App() {
               </button>
             ))}
           </div>
+
+          {['band', 'business', 'teacher'].includes(kind) && (
+            <div className="saved-row">
+              <select
+                className="saved-select"
+                value={selectedProfile}
+                onChange={(e) => handleLoadProfile(e.target.value)}
+              >
+                <option value="">— Load saved profile —</option>
+                {savedProfiles.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.profile.name} ({KIND_LABELS[p.kind]})
+                  </option>
+                ))}
+              </select>
+              <button className="ghost-btn" onClick={saveProfile}>Save profile</button>
+              <button className="ghost-btn danger" onClick={deleteProfile} disabled={!selectedProfile}>Delete</button>
+            </div>
+          )}
 
           {kind === 'band' && (
             <>
@@ -261,7 +376,7 @@ export default function App() {
             <>
               <Field label="Business name" value={business.name} onChange={update('name')} placeholder="e.g. Bella's Diner" />
               <Field label="Business type" value={business.type} onChange={update('type')} placeholder="e.g. Restaurant" />
-              <Field label="Location" value={business.location} onChange={update('location')} placeholder="e.g. Austin, TX" />
+              <Field label="Location" value={business.location} onChange={update('location')} placeholder="e.g. Mumbai" />
               <Field label="Services / products" value={business.services} onChange={update('services')} textarea />
               <Field label="Tone" value={business.tone} onChange={update('tone')} />
               <Field label="Target keyword" value={business.keyword} onChange={update('keyword')} placeholder="e.g. best pizza near me" />
@@ -310,7 +425,26 @@ export default function App() {
             </>
           )}
 
-          {kind !== 'images' && (
+          {kind === 'clients' && (
+            <>
+              <Field label="Client / business name" value={clientForm.name} onChange={(v) => setClientForm((f) => ({ ...f, name: v }))} placeholder="e.g. Raj's Dhaba" />
+              <Field label="Niche" value={clientForm.niche} onChange={(v) => setClientForm((f) => ({ ...f, niche: v }))} placeholder="e.g. Restaurant / Band / Teacher" />
+              <Field label="Contact (phone / email)" value={clientForm.contact} onChange={(v) => setClientForm((f) => ({ ...f, contact: v }))} placeholder="e.g. 98xxxxxx00" />
+              <Select
+                label="Status"
+                value={clientForm.status}
+                onChange={(v) => setClientForm((f) => ({ ...f, status: v }))}
+                options={CLIENT_STATUSES}
+              />
+              <Field label="Next follow-up date" value={clientForm.followUp} onChange={(v) => setClientForm((f) => ({ ...f, followUp: v }))} placeholder="YYYY-MM-DD" />
+              <Field label="Notes" value={clientForm.notes} onChange={(v) => setClientForm((f) => ({ ...f, notes: v }))} textarea placeholder="e.g. Liked the free sample, asked for pricing" />
+              <button className="task-btn" onClick={addClient} disabled={!clientForm.name}>
+                Add client
+              </button>
+            </>
+          )}
+
+          {kind !== 'images' && kind !== 'clients' && (
             <div className="task-grid">
               {tasks.map((t) => (
                 <button
@@ -327,64 +461,116 @@ export default function App() {
         </section>
 
         <section className="card output-card">
-          <div className="output-head">
-            <span className="output-title">
-              {kind === 'images'
-                ? designSvg
-                  ? `${design.subject} — ${lastTask}`
-                  : 'Design output'
-                : output
-                  ? `${profile.name} — ${lastTask}`
-                  : 'Output'}
-            </span>
-            {output && (
-              <div className="output-actions">
-                <button onClick={copy}>Copy</button>
-                <button onClick={download}>Download .md</button>
+          {kind === 'clients' ? (
+            <>
+              <div className="output-head">
+                <span className="output-title">Client tracker</span>
               </div>
-            )}
-            {designSvg && (
-              <div className="output-actions">
-                <button onClick={downloadSvg}>Download .svg</button>
+              {clients.length === 0 && (
+                <div className="empty">
+                  <p>No clients yet. Add your first lead on the left.</p>
+                  <p className="hint">
+                    Track everyone you pitch. Follow-ups are where deals close — check
+                    this list daily.
+                  </p>
+                </div>
+              )}
+              <div className="client-list">
+                {clients.map((c) => (
+                  <div key={c.id} className="client-item">
+                    <div className="client-top">
+                      <strong>{c.name}</strong>
+                      <select
+                        className="status-select"
+                        value={c.status}
+                        onChange={(e) => setClientStatus(c.id, e.target.value)}
+                      >
+                        {CLIENT_STATUSES.map((s) => (
+                          <option key={s} value={s}>{s}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="client-meta">
+                      {c.niche && <span>{c.niche}</span>}
+                      {c.contact && <span>{c.contact}</span>}
+                      {c.followUp && <span className={isOverdue(c.followUp) ? 'overdue' : ''}>Follow-up: {c.followUp}</span>}
+                    </div>
+                    {c.notes && <div className="client-notes">{c.notes}</div>}
+                    <button className="ghost-btn danger small" onClick={() => deleteClient(c.id)}>Remove</button>
+                  </div>
+                ))}
               </div>
-            )}
-          </div>
-
-          {error && <div className="error">{error}</div>}
-
-          {loading && <div className="loading">Generating&hellip; this can take 20-60s.</div>}
-
-          {!loading && kind === 'images' && !designSvg && !error && (
-            <div className="empty">
-              <p>Choose a purpose and click <strong>Generate design</strong>.</p>
-              <p className="hint">
-                Logo, Facebook ad, LinkedIn banner, YouTube thumbnail &amp; more — all
-                sized correctly for each platform.
-              </p>
-            </div>
-          )}
-
-          {!loading && kind !== 'images' && !output && !error && (
-            <div className="empty">
-              <p>Pick a task to generate content for <strong>{profile.name || 'your client'}</strong>.</p>
-              <p className="hint">
-                Band mode: use the gig + booking pitch to land AITO shows.
-                Teacher mode: Shorts bring kids in, lessons turn them into paying students.
-              </p>
-            </div>
-          )}
-
-          {designSvg && (
-            <div className="image-grid">
-              <div className="image-item">
-                <img src={svgPreview} alt={design.subject} />
+            </>
+          ) : (
+            <>
+              <div className="output-head">
+                <span className="output-title">
+                  {kind === 'images'
+                    ? designSvg
+                      ? `${design.subject} — ${lastTask}`
+                      : 'Design output'
+                    : output
+                      ? `${profile.name} — ${lastTask}`
+                      : 'Output'}
+                </span>
+                {output && (
+                  <div className="output-actions">
+                    <button onClick={copy}>Copy</button>
+                    <button onClick={download}>Download {lastTask === 'socialcsv' ? '.csv' : '.md'}</button>
+                    <button onClick={downloadPdf}>Download PDF</button>
+                  </div>
+                )}
+                {designSvg && (
+                  <div className="output-actions">
+                    <button onClick={downloadSvg}>Download .svg</button>
+                  </div>
+                )}
               </div>
-            </div>
-          )}
 
-          {output && <pre className="output">{output}</pre>}
+              {error && <div className="error">{error}</div>}
+
+              {loading && <div className="loading">Generating&hellip; this can take 15-30s.</div>}
+
+              {!loading && kind === 'images' && !designSvg && !error && (
+                <div className="empty">
+                  <p>Choose a purpose and click <strong>Generate design</strong>.</p>
+                  <p className="hint">
+                    Logo, Facebook ad, LinkedIn banner, YouTube thumbnail &amp; more — all
+                    sized correctly for each platform.
+                  </p>
+                </div>
+              )}
+
+              {!loading && kind !== 'images' && !output && !error && (
+                <div className="empty">
+                  <p>Pick a task to generate content for <strong>{profile.name || 'your client'}</strong>.</p>
+                  <p className="hint">
+                    Band mode: use the gig + booking pitch to land AITO shows.
+                    Teacher mode: Shorts bring kids in, lessons turn them into paying students.
+                  </p>
+                </div>
+              )}
+
+              {designSvg && (
+                <div className="image-grid">
+                  <div className="image-item">
+                    <img src={svgPreview} alt={design.subject} />
+                  </div>
+                </div>
+              )}
+
+              {output && <pre className="output print-content">{output}</pre>}
+            </>
+          )}
         </section>
       </div>
     </div>
   );
+}
+
+function isOverdue(dateStr) {
+  if (!dateStr) return false;
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return false;
+  return d < new Date();
 }

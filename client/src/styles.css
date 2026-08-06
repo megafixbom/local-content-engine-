@@ -238,3 +238,147 @@ select:focus {
 .image-item .output-actions {
   margin-top: 8px;
 }
+
+.saved-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.saved-select {
+  flex: 1;
+}
+
+.ghost-btn {
+  padding: 8px 12px;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  background: #0f172a;
+  color: #e2e8f0;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ghost-btn:hover:not(:disabled) {
+  border-color: #2563eb;
+  color: #fff;
+}
+
+.ghost-btn.danger:hover:not(:disabled) {
+  border-color: #b91c1c;
+  color: #fca5a5;
+}
+
+.ghost-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ghost-btn.small {
+  padding: 4px 10px;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+.client-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  max-height: 70vh;
+}
+
+.client-item {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.client-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.client-top strong {
+  font-size: 15px;
+}
+
+.status-select {
+  width: auto;
+  min-width: 120px;
+}
+
+.client-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: 8px;
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.client-notes {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #cbd5e1;
+}
+
+.overdue {
+  color: #fca5a5;
+  font-weight: 600;
+}
+
+.print-brand {
+  display: none;
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+  .print-hide {
+    display: none !important;
+  }
+  .print-brand {
+    display: block;
+    border-bottom: 3px solid #2563eb;
+    padding-bottom: 10px;
+    margin-bottom: 18px;
+  }
+  .print-brand-name {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+  }
+  .print-brand-client {
+    font-size: 14px;
+    color: #475569;
+    margin-top: 4px;
+  }
+  .app {
+    max-width: none;
+    padding: 0;
+  }
+  .layout {
+    display: block;
+  }
+  .card {
+    background: #fff;
+    border: none;
+    padding: 0;
+  }
+  .print-content {
+    background: #fff;
+    border: none;
+    color: #111827;
+    font-size: 12px;
+    max-height: none;
+    overflow: visible;
+    white-space: pre-wrap;
+  }
+}

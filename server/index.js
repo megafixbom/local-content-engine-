@@ -83,7 +83,7 @@ app.post('/api/generate', async (req, res) => {
     const task = router.content(user, request);
 
     const text = await callLLM(system, task);
-    res.json({ content: text });
+    res.json({ content: request.type === 'socialcsv' ? rewriteCsvDates(text) : text });
   } catch (err) {
     if (err.message === 'MISSING_KEY') {
       return res.status(500).json({
@@ -93,6 +93,21 @@ app.post('/api/generate', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+function rewriteCsvDates(csv) {
+  const dates = csv.match(/"20\d\d-\d\d-\d\d"/g);
+  if (!dates) return csv;
+  const start = new Date();
+  start.setDate(start.getDate() + 1);
+  const out = [];
+  dates.forEach((_, i) => {
+    const d = new Date(start);
+    d.setDate(d.getDate() + i);
+    out.push(`"${d.toISOString().slice(0, 10)}"`);
+  });
+  let n = 0;
+  return csv.replace(/"20\d\d-\d\d-\d\d"/g, () => out[n++]);
+}
 
 app.post('/api/design', async (req, res) => {
   try {

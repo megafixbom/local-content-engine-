@@ -44,20 +44,35 @@ The frontend proxies `/api` to the backend, so everything works through one port
 | Band | Gig announcement template | Announcing shows |
 | Band | Booking pitch email | Landing weddings / parties / clubs |
 | Band | Blog: "Booking [Band]" | Getting found by event planners |
+| Band | Hashtags (20) | Instagram/TikTok reach |
+| Band | Auto-post CSV (5) | Scheduling posts with platforms + dates |
 | Business | 5 social media posts | Consistent local marketing |
 | Business | SEO blog post | Ranking on Google |
 | Business | Review responses | Managing reputation |
 | Business | Google Business posts | Local search visibility |
+| Business | Hashtags (20) | Instagram/TikTok reach |
+| Business | WhatsApp broadcasts (5) | Society/community group outreach |
+| Business | Auto-post CSV (5) | Scheduling posts with platforms + dates |
 | Teacher | Channel setup pack | Description, SEO tags, About, posting schedule |
 | Teacher | Shorts/Reels scripts | Stopping the scroll, growing the channel |
 | Teacher | Lesson video script | Turning viewers into paying students |
 | Teacher | Parent pitch videos | Reassuring parents that lessons are worth it |
 | Teacher | Original song ideas | Writing simple, kid-friendly songs |
 | Teacher | 2-week content calendar | Staying consistent without thinking |
+| Teacher | Hashtags (20) | Instagram/TikTok reach |
+| Teacher | WhatsApp broadcasts (5) | Society/community group outreach |
+| Teacher | Auto-post CSV (5) | Scheduling posts with platforms + dates |
 | Design studio | Channel logo | Brand identity |
 | Design studio | Facebook ad / LinkedIn banner / IG post | Paid & organic social promotion |
 | Design studio | YouTube thumbnail / channel banner | Clickable, on-brand videos |
 | Design studio | WhatsApp / story graphics | Local reach (Mumbai society groups etc.) |
+
+The **Clients tab** is your pipeline: add each paying client, set their monthly
+retainer and due date, and the app tracks status (prospect → active → done) with
+overdue alerts. Profiles and client data save automatically in your browser.
+The **Print** button produces a clean, branded deliverable for each client, and
+the Auto-post CSV downloads as a real `.csv` with the next 5 weekdays pre-filled
+— ready to import into a scheduler.
 
 Content localizes to a service area when one is provided — e.g. a Mumbai-based
 guitar teacher in Malad serving Borivali to Bandra gets scripts and CTAs that
