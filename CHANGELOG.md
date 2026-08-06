@@ -22,6 +22,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New content tasks: Hashtags (20), WhatsApp broadcasts (5), and Auto-post CSV (5)
   with correct next-5-days scheduling and `.csv` download.
 - WhatsApp broadcasts and Hashtags added to the weekly auto-generation jobs.
+- Design studio **Photo mode**: real AI images for social posts & thumbnails,
+  generated free via Pollinations (no API key), with Sana / Flux / Turbo model
+  choices and `.jpg` download at exact platform sizes.
 
 ### Changed
 

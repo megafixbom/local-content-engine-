@@ -66,6 +66,11 @@ The frontend proxies `/api` to the backend, so everything works through one port
 | Design studio | Facebook ad / LinkedIn banner / IG post | Paid & organic social promotion |
 | Design studio | YouTube thumbnail / channel banner | Clickable, on-brand videos |
 | Design studio | WhatsApp / story graphics | Local reach (Mumbai society groups etc.) |
+| Design studio | AI photo posts (Photo mode) | Real images for social posts & thumbnails |
+
+The Design studio now has two output types: **Vector (SVG)** for crisp logos and
+banners, and **Photo mode** which generates real AI images (free via Pollinations,
+no API key needed) at exact platform sizes — ready to post for a friend's channel.
 
 The **Clients tab** is your pipeline: add each paying client, set their monthly
 retainer and due date, and the app tracks status (prospect → active → done) with

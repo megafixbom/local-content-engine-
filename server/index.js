@@ -134,6 +134,43 @@ app.post('/api/design', async (req, res) => {
   }
 });
 
+const POLLINATIONS_URL = 'https://image.pollinations.ai/prompt';
+const IMAGE_MODELS = ['sana', 'flux', 'turbo'];
+
+app.post('/api/image', async (req, res) => {
+  try {
+    const { subject, purpose, style, width, height, model } = req.body || {};
+    if (!subject) {
+      return res.status(400).json({ error: 'subject is required' });
+    }
+    const w = Math.min(Number(width) || 1024, 2048);
+    const h = Math.min(Number(height) || 1024, 2048);
+    const mdl = IMAGE_MODELS.includes(model) ? model : 'sana';
+    const prompt = encodeURIComponent(
+      `Create a ${purpose || 'social media graphic'} for "${subject}". Style: ${style || 'photorealistic'}, vibrant, high quality.`
+    );
+    const url = `${POLLINATIONS_URL}/${prompt}?width=${w}&height=${h}&model=${mdl}&nologo=true&seed=${Math.floor(Math.random() * 1e9)}`;
+
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 60000);
+    const imgRes = await fetch(url, { signal: controller.signal });
+    clearTimeout(timer);
+
+    if (!imgRes.ok) {
+      throw new Error(`Image service error (${imgRes.status})`);
+    }
+    const buffer = Buffer.from(await imgRes.arrayBuffer());
+    res.set('Content-Type', imgRes.headers.get('content-type') || 'image/jpeg');
+    res.set('Cache-Control', 'no-store');
+    res.send(buffer);
+  } catch (err) {
+    if (err.name === 'AbortError') {
+      return res.status(504).json({ error: 'Image generation timed out. Try again or pick a different model.' });
+    }
+    res.status(500).json({ error: err.message });
+  }
+});
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Content engine server running on http://localhost:${PORT}`);

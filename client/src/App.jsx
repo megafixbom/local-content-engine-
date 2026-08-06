@@ -79,8 +79,16 @@ const STYLES = [
 const DEFAULT_DESIGN = {
   subject: 'Tiny Riffs Guitar',
   purpose: 'logo',
-  style: STYLES[0]
+  style: STYLES[0],
+  mode: 'svg',
+  model: 'sana'
 };
+
+const IMAGE_MODELS = [
+  { id: 'sana', label: 'Sana (fast, default)' },
+  { id: 'flux', label: 'Flux (best quality)' },
+  { id: 'turbo', label: 'Turbo (fast SDXL)' }
+];
 
 const CLIENT_STATUSES = ['Lead', 'Pitched', 'Follow-up', 'Signed', 'Closed'];
 const KIND_LABELS = { band: 'Band', business: 'Business', teacher: 'Teacher' };
@@ -145,6 +153,7 @@ export default function App() {
   const [error, setError] = useState('');
   const [lastTask, setLastTask] = useState('');
   const [designSvg, setDesignSvg] = useState('');
+  const [designIsPhoto, setDesignIsPhoto] = useState(false);
 
   const [savedProfiles, setSavedProfiles] = useState(() => loadJSON(PROFILES_KEY, []));
   const [selectedProfile, setSelectedProfile] = useState('');
@@ -221,22 +230,45 @@ export default function App() {
     setOutput('');
     setLastTask(purpose.id);
     try {
-      const res = await fetch('/api/design', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          subject: design.subject,
-          purpose: purpose.prompt,
-          style: design.style,
-          width: purpose.width,
-          height: purpose.height
-        })
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || 'Design generation failed');
+      if (design.mode === 'photo') {
+        const res = await fetch('/api/image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            subject: design.subject,
+            purpose: purpose.prompt,
+            style: design.style,
+            width: purpose.width,
+            height: purpose.height,
+            model: design.model
+          })
+        });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.error || 'Image generation failed');
+        }
+        const blob = await res.blob();
+        setDesignIsPhoto(true);
+        setDesignSvg(URL.createObjectURL(blob));
+      } else {
+        const res = await fetch('/api/design', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            subject: design.subject,
+            purpose: purpose.prompt,
+            style: design.style,
+            width: purpose.width,
+            height: purpose.height
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || 'Design generation failed');
+        }
+        setDesignIsPhoto(false);
+        setDesignSvg(data.content);
       }
-      setDesignSvg(data.content);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -245,18 +277,19 @@ export default function App() {
   };
 
   const downloadSvg = () => {
-    const safe = `${design.subject.replace(/[^a-z0-9]/gi, '_')}_${lastTask}.svg`;
-    const blob = new Blob([designSvg], { type: 'image/svg+xml' });
-    const url = URL.createObjectURL(blob);
+    const safe = `${design.subject.replace(/[^a-z0-9]/gi, '_')}_${lastTask}${designIsPhoto ? '.jpg' : '.svg'}`;
+    const url = designIsPhoto ? designSvg : URL.createObjectURL(new Blob([designSvg], { type: 'image/svg+xml' }));
     const a = document.createElement('a');
     a.href = url;
     a.download = safe;
     a.click();
-    URL.revokeObjectURL(url);
+    if (!designIsPhoto) URL.revokeObjectURL(url);
   };
 
   const svgPreview = designSvg
-    ? `data:image/svg+xml;charset=utf-8,${encodeURIComponent(designSvg)}`
+    ? designIsPhoto
+      ? designSvg
+      : `data:image/svg+xml;charset=utf-8,${encodeURIComponent(designSvg)}`
     : '';
 
   const saveProfile = () => {
@@ -402,6 +435,15 @@ export default function App() {
                 placeholder="e.g. Tiny Riffs Guitar"
               />
               <Select
+                label="Output type"
+                value={design.mode}
+                onChange={(v) => updateDesign('mode')(v)}
+                options={[
+                  { id: 'photo', label: 'Photo (AI image — posts & thumbnails)' },
+                  { id: 'svg', label: 'Vector (SVG — crisp logo & banners)' }
+                ]}
+              />
+              <Select
                 label="Purpose"
                 value={design.purpose}
                 onChange={(v) => updateDesign('purpose')(v)}
@@ -413,14 +455,23 @@ export default function App() {
                 onChange={(v) => updateDesign('style')(v)}
                 options={STYLES}
               />
+              {design.mode === 'photo' && (
+                <Select
+                  label="AI model"
+                  value={design.model}
+                  onChange={(v) => updateDesign('model')(v)}
+                  options={IMAGE_MODELS}
+                />
+              )}
               <div className="task-grid">
                 <button className="task-btn" disabled={loading} onClick={generateImages}>
-                  Generate design
+                  {loading ? 'Generating…' : 'Generate image'}
                 </button>
               </div>
               <p className="hint">
-                Free vector designs generated by the AI model (uses your Groq key).
-                Crisp logos &amp; banners at the exact size each platform needs.
+                {design.mode === 'photo'
+                  ? 'Real AI images (free, no key needed) at exact platform sizes — ready to post for the channel.'
+                  : 'Free vector designs generated by the AI model (uses your Groq key). Crisp logos & banners at the exact size each platform needs.'}
               </p>
             </>
           )}
@@ -522,7 +573,7 @@ export default function App() {
                 )}
                 {designSvg && (
                   <div className="output-actions">
-                    <button onClick={downloadSvg}>Download .svg</button>
+                    <button onClick={downloadSvg}>Download {designIsPhoto ? '.jpg' : '.svg'}</button>
                   </div>
                 )}
               </div>
@@ -533,10 +584,10 @@ export default function App() {
 
               {!loading && kind === 'images' && !designSvg && !error && (
                 <div className="empty">
-                  <p>Choose a purpose and click <strong>Generate design</strong>.</p>
+                  <p>Choose an output type and purpose, then click <strong>Generate</strong>.</p>
                   <p className="hint">
-                    Logo, Facebook ad, LinkedIn banner, YouTube thumbnail &amp; more — all
-                    sized correctly for each platform.
+                    Photo mode makes real posts &amp; thumbnails (free). Vector mode makes crisp
+                    logos &amp; banners at the exact size each platform needs.
                   </p>
                 </div>
               )}
